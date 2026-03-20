@@ -20,7 +20,8 @@ class CMC_Currency_Manager {
     }
 
     private function __construct() {
-        add_action('init', array($this, 'handle_currency_switch'));
+        // Use 'wp' hook — WC session is fully initialized by then (unlike 'init')
+        add_action('wp', array($this, 'handle_currency_switch'));
     }
 
     /**
@@ -42,7 +43,7 @@ class CMC_Currency_Manager {
             if (in_array($currency, $enabled_currencies)) {
                 self::persist_currency($currency);
             }
-            return; // Don't run geo-detect on the same request as a manual switch
+            return;
         }
 
         // 2. Already have a stored preference — nothing to do
@@ -53,18 +54,17 @@ class CMC_Currency_Manager {
             return;
         }
 
-        // 3 & 4. First-time visitor: try geolocation then fallback
+        // 3. First-time visitor: try geolocation
         if (get_option('cmc_geolocation_enabled', 'yes') === 'yes') {
             $detected = self::detect_currency_by_location();
 
             if ($detected && in_array($detected, $enabled_currencies)) {
-                // Country matched an enabled currency
                 self::persist_currency($detected);
                 return;
             }
         }
 
-        // Visitor's country not mapped (or geo disabled) — use admin fallback
+        // 4. Country not mapped or geo disabled — use admin-configured fallback
         $fallback = self::get_fallback_currency();
         if ($fallback && in_array($fallback, $enabled_currencies)) {
             self::persist_currency($fallback);
@@ -82,7 +82,15 @@ class CMC_Currency_Manager {
             return null;
         }
 
-        $geo     = WC_Geolocation::geolocate_ip();
+        $ip = WC_Geolocation::get_ip_address();
+
+        // Local/private IPs can never be geolocated — skip silently
+        if (self::is_private_ip($ip)) {
+            return null;
+        }
+
+        // api_fallback=true so it works even without the MaxMind local database
+        $geo     = WC_Geolocation::geolocate_ip('', false, true);
         $country = !empty($geo['country']) ? strtoupper($geo['country']) : '';
 
         if (empty($country)) {
@@ -92,6 +100,16 @@ class CMC_Currency_Manager {
         $map = self::get_country_currency_map();
 
         return isset($map[$country]) ? $map[$country] : null;
+    }
+
+    /**
+     * Check if an IP is localhost or a private/reserved range.
+     */
+    private static function is_private_ip($ip) {
+        if (empty($ip)) {
+            return true;
+        }
+        return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false;
     }
 
     /**
