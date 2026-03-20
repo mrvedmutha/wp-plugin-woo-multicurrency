@@ -1,0 +1,156 @@
+/* Product Edit Page Styles */
+.cmc_custom_prices {
+  border-top: 1px solid #eee;
+  margin-top: 12px;
+  padding-top: 12px;
+}
+
+/* Accordion Wrapper */
+.cmc-accordion-wrapper {
+  margin: 12px;
+}
+
+/* Accordion Item */
+.cmc-currency-accordion {
+  margin-bottom: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #fff;
+}
+
+/* Accordion Header */
+.cmc-accordion-header {
+  cursor: pointer;
+  user-select: none;
+  background: #f9f9f9;
+  border-bottom: 1px solid #ddd;
+  transition: background 0.2s;
+}
+
+.cmc-accordion-header:hover {
+  background: #f0f0f0;
+}
+
+.cmc-accordion-header h4 {
+  margin: 0;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2271b1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cmc-currency-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+/* Toggle Indicator */
+.cmc-toggle-indicator {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid #2271b1;
+  margin-left: 10px;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.cmc-currency-accordion.open .cmc-toggle-indicator {
+  transform: rotate(180deg);
+}
+
+/* Price Preview in Header */
+.cmc-price-preview {
+  font-size: 13px;
+  color: #666;
+  font-weight: normal;
+  margin-left: auto;
+}
+
+.cmc-price-preview del {
+  color: #999;
+  margin-right: 5px;
+}
+
+/* Accordion Content */
+.cmc-accordion-content {
+  padding: 16px;
+  display: none;
+  border-top: 1px solid #f0f0f0;
+}
+
+.cmc-currency-accordion.open .cmc-accordion-content {
+  display: block;
+}
+
+.cmc-accordion-content::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Two-column layout for price fields */
+.cmc-accordion-content p.form-row-first {
+  float: none !important;
+  width: 100% !important;
+  margin-right: 0 !important;
+}
+
+.cmc-accordion-content p.form-row-last {
+  float: none !important;
+  width: 100% !important;
+  margin-right: 0 !important;
+}
+
+/* Variation Styles */
+.cmc_variation_prices {
+  clear: both;
+  margin: 10px 0;
+}
+
+.cmc_variation_prices h4 {
+  font-size: 13px;
+}
+
+.cmc_variation_prices .cmc-accordion-wrapper {
+  margin: 8px;
+}
+
+.cmc_variation_prices .cmc-accordion-header h4 {
+  font-size: 13px;
+  padding: 10px 12px;
+}
+
+.cmc_variation_prices .cmc-accordion-content {
+  padding: 12px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 782px) {
+  .cmc-accordion-header h4 {
+    font-size: 13px;
+    padding: 10px 12px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cmc-price-preview {
+    margin-left: 25px;
+    margin-top: 5px;
+  }
+
+  /* Stack fields on mobile */
+  .cmc-accordion-content p.form-row-first,
+  .cmc-accordion-content p.form-row-last {
+    float: none !important;
+    width: 100% !important;
+    margin-right: 0 !important;
+  }
+}

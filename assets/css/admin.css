@@ -1,0 +1,38 @@
+/* Admin Settings Styles */
+.cmc-currency-list {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  padding: 10px;
+  background: #fff;
+}
+
+.cmc-currency-list label {
+  display: block;
+  padding: 8px;
+  margin: 0;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 0.2s;
+}
+
+.cmc-currency-list label:hover {
+  background: #f9f9f9;
+}
+
+.cmc-currency-list label:last-child {
+  border-bottom: none;
+}
+
+.cmc-currency-list input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+/* Success message styling */
+.cmc-success-message {
+  display: inline-block;
+  padding: 8px 12px;
+  background: #00a32a;
+  color: #fff;
+  border-radius: 3px;
+  margin-left: 10px;
+}

@@ -1,0 +1,99 @@
+/* Currency Switcher Styles */
+.cmc-currency-switcher {
+  display: inline-block;
+  margin: 10px 0;
+}
+
+.cmc-switcher-form {
+  margin: 0;
+}
+
+.cmc-currency-select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  min-width: 200px;
+}
+
+.cmc-currency-select:hover {
+  border-color: #999;
+}
+
+.cmc-currency-select:focus {
+  outline: none;
+  border-color: #2271b1;
+  box-shadow: 0 0 0 1px #2271b1;
+}
+
+/* Button style switcher */
+.cmc-currency-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cmc-currency-button {
+  padding: 8px 16px;
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.cmc-currency-button:hover {
+  background: #e0e0e0;
+  border-color: #999;
+  text-decoration: none;
+}
+
+.cmc-currency-button.active {
+  background: #2271b1;
+  border-color: #2271b1;
+  color: #fff;
+}
+
+/* Widget styles */
+.widget .cmc-currency-switcher {
+  display: block;
+  width: 100%;
+}
+
+.widget .cmc-currency-select {
+  width: 100%;
+}
+
+.widget .cmc-currency-buttons {
+  justify-content: center;
+}
+
+/* Auto-display styles */
+.woocommerce .cmc-currency-switcher,
+.single-product .cmc-currency-switcher {
+  margin: 15px 0 20px;
+  display: block;
+  text-align: left;
+}
+
+.woocommerce .cmc-currency-switcher::before {
+  content: "Select Currency: ";
+  font-weight: 600;
+  margin-right: 8px;
+  color: #333;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .cmc-currency-select {
+    min-width: 100%;
+  }
+
+  .cmc-currency-buttons {
+    justify-content: center;
+  }
+}
