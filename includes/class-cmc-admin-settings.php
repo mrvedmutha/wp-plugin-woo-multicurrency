@@ -50,6 +50,8 @@ class CMC_Admin_Settings {
     public function register_settings() {
         register_setting('cmc_settings_group', 'cmc_enabled_currencies');
         register_setting('cmc_settings_group', 'cmc_auto_display_location');
+        register_setting('cmc_settings_group', 'cmc_geolocation_enabled');
+        register_setting('cmc_settings_group', 'cmc_fallback_currency');
     }
     
     /**
@@ -79,8 +81,10 @@ class CMC_Admin_Settings {
         }
         
         // Get current settings
-        $enabled_currencies = get_option('cmc_enabled_currencies', array());
+        $enabled_currencies    = get_option('cmc_enabled_currencies', array());
         $auto_display_location = get_option('cmc_auto_display_location', 'none');
+        $geolocation_enabled   = get_option('cmc_geolocation_enabled', 'yes');
+        $fallback_currency     = get_option('cmc_fallback_currency', '');
         
         // Available currencies
         $available_currencies = $this->get_available_currencies();
@@ -157,6 +161,50 @@ class CMC_Admin_Settings {
                                 </p>
                             </td>
                         </tr>
+
+                        <tr>
+                            <th scope="row">
+                                <label for="cmc_geolocation_enabled"><?php esc_html_e('Auto-Detect Currency by Location', 'custom-multi-currency'); ?></label>
+                            </th>
+                            <td>
+                                <label>
+                                    <input type="checkbox" name="cmc_geolocation_enabled" id="cmc_geolocation_enabled" value="yes" <?php checked($geolocation_enabled, 'yes'); ?> />
+                                    <?php esc_html_e('Automatically set currency based on the visitor\'s country on their first visit', 'custom-multi-currency'); ?>
+                                </label>
+                                <p class="description">
+                                    <?php esc_html_e('Uses WooCommerce\'s built-in geolocation. Make sure "Default customer location" is set to "Geolocate" in WooCommerce → Settings → Advanced.', 'custom-multi-currency'); ?>
+                                </p>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th scope="row">
+                                <label for="cmc_fallback_currency"><?php esc_html_e('Fallback Currency', 'custom-multi-currency'); ?></label>
+                            </th>
+                            <td>
+                                <?php
+                                $default_currency    = get_option('woocommerce_currency', 'USD');
+                                $all_enabled         = CMC_Currency_Manager::get_enabled_currencies();
+                                $available_currencies = $this->get_available_currencies();
+                                ?>
+                                <select name="cmc_fallback_currency" id="cmc_fallback_currency">
+                                    <option value="" <?php selected($fallback_currency, ''); ?>>
+                                        <?php printf(esc_html__('Store Default (%s)', 'custom-multi-currency'), esc_html($default_currency)); ?>
+                                    </option>
+                                    <?php foreach ($all_enabled as $code) : ?>
+                                        <option value="<?php echo esc_attr($code); ?>" <?php selected($fallback_currency, $code); ?>>
+                                            <?php echo esc_html($code); ?> - <?php echo esc_html($available_currencies[$code] ?? $code); ?>
+                                            <?php if ($code === $default_currency) : ?>
+                                                <?php esc_html_e('(base)', 'custom-multi-currency'); ?>
+                                            <?php endif; ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <p class="description">
+                                    <?php esc_html_e('Currency shown to visitors from countries not mapped to any of your enabled currencies (e.g. traffic from Africa, Latin America). Can be set to any enabled currency — does not have to be the store base.', 'custom-multi-currency'); ?>
+                                </p>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
                 
@@ -177,9 +225,17 @@ class CMC_Admin_Settings {
         $auto_display_location = isset($_POST['cmc_auto_display_location'])
             ? sanitize_text_field($_POST['cmc_auto_display_location'])
             : 'none';
-        
+
+        $geolocation_enabled = isset($_POST['cmc_geolocation_enabled']) ? 'yes' : 'no';
+
+        $fallback_currency = isset($_POST['cmc_fallback_currency'])
+            ? sanitize_text_field($_POST['cmc_fallback_currency'])
+            : '';
+
         update_option('cmc_enabled_currencies', $enabled_currencies);
         update_option('cmc_auto_display_location', $auto_display_location);
+        update_option('cmc_geolocation_enabled', $geolocation_enabled);
+        update_option('cmc_fallback_currency', $fallback_currency);
         
         // Show success message
         add_settings_error(
