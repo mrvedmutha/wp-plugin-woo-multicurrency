@@ -104,34 +104,39 @@ class CMC_Product_Fields {
                 <div class="cmc-accordion-content">
                     <?php
                     woocommerce_wp_text_input(array(
-                        'id'          => $field_id . '_sale',
-                        'label'       => sprintf(__('Sale Price (%s)', 'custom-multi-currency'), $currency),
-                        'placeholder' => wc_format_localized_price(0),
-                        'value'       => $sale_price,
-                        'type'        => 'text',
-                        'data_type'   => 'price',
-                        'desc_tip'    => true,
-                        'description' => sprintf(__('Enter the sale price in %s', 'custom-multi-currency'), $currency),
-                        'wrapper_class' => 'form-row form-row-first',
+                        'id'                => $field_id . '_regular',
+                        'label'             => sprintf(__('Regular Price (%s)', 'custom-multi-currency'), $currency),
+                        'placeholder'       => wc_format_localized_price(0),
+                        'value'             => $regular_price,
+                        'type'              => 'text',
+                        'data_type'         => 'price',
+                        'desc_tip'          => true,
+                        'description'       => sprintf(__('Enter the regular price in %s', 'custom-multi-currency'), $currency),
+                        'wrapper_class'     => 'form-row form-row-first',
+                        'custom_attributes' => array('data-cmc-field' => 'regular'),
                     ));
-                    
+
                     woocommerce_wp_text_input(array(
-                        'id'          => $field_id . '_regular',
-                        'label'       => sprintf(__('Regular Price (%s)', 'custom-multi-currency'), $currency),
-                        'placeholder' => wc_format_localized_price(0),
-                        'value'       => $regular_price,
-                        'type'        => 'text',
-                        'data_type'   => 'price',
-                        'desc_tip'    => true,
-                        'description' => sprintf(__('Enter the regular price in %s', 'custom-multi-currency'), $currency),
-                        'wrapper_class' => 'form-row form-row-last',
+                        'id'                => $field_id . '_sale',
+                        'label'             => sprintf(__('Sale Price (%s)', 'custom-multi-currency'), $currency),
+                        'placeholder'       => wc_format_localized_price(0),
+                        'value'             => $sale_price,
+                        'type'              => 'text',
+                        'data_type'         => 'price',
+                        'desc_tip'          => true,
+                        'description'       => sprintf(__('Enter the sale price in %s', 'custom-multi-currency'), $currency),
+                        'wrapper_class'     => 'form-row form-row-last',
+                        'custom_attributes' => array('data-cmc-field' => 'sale'),
                     ));
                     ?>
+                    <p class="cmc-price-error" style="display:none;">
+                        <?php esc_html_e('Sale price must be lower than the regular price.', 'custom-multi-currency'); ?>
+                    </p>
                 </div>
             </div>
             <?php
         }
-        
+
         echo '</div>'; // .cmc-accordion-wrapper
         echo '</div>'; // .options_group
     }
@@ -208,31 +213,36 @@ class CMC_Product_Fields {
                 <div class="cmc-accordion-content">
                     <?php
                     woocommerce_wp_text_input(array(
-                        'id'            => $field_id . '_sale[' . $loop . ']',
-                        'name'          => $field_id . '_sale[' . $loop . ']',
-                        'label'         => sprintf(__('Sale Price (%s)', 'custom-multi-currency'), $currency),
-                        'placeholder'   => wc_format_localized_price(0),
-                        'value'         => $sale_price,
-                        'type'          => 'text',
-                        'data_type'     => 'price',
-                        'wrapper_class' => 'form-row form-row-first',
-                        'desc_tip'      => true,
-                        'description'   => sprintf(__('Enter the sale price in %s', 'custom-multi-currency'), $currency),
+                        'id'                => $field_id . '_regular[' . $loop . ']',
+                        'name'              => $field_id . '_regular[' . $loop . ']',
+                        'label'             => sprintf(__('Regular Price (%s)', 'custom-multi-currency'), $currency),
+                        'placeholder'       => wc_format_localized_price(0),
+                        'value'             => $regular_price,
+                        'type'              => 'text',
+                        'data_type'         => 'price',
+                        'wrapper_class'     => 'form-row form-row-first',
+                        'desc_tip'          => true,
+                        'description'       => sprintf(__('Enter the regular price in %s', 'custom-multi-currency'), $currency),
+                        'custom_attributes' => array('data-cmc-field' => 'regular'),
                     ));
-                    
+
                     woocommerce_wp_text_input(array(
-                        'id'            => $field_id . '_regular[' . $loop . ']',
-                        'name'          => $field_id . '_regular[' . $loop . ']',
-                        'label'         => sprintf(__('Regular Price (%s)', 'custom-multi-currency'), $currency),
-                        'placeholder'   => wc_format_localized_price(0),
-                        'value'         => $regular_price,
-                        'type'          => 'text',
-                        'data_type'     => 'price',
-                        'wrapper_class' => 'form-row form-row-last',
-                        'desc_tip'      => true,
-                        'description'   => sprintf(__('Enter the regular price in %s', 'custom-multi-currency'), $currency),
+                        'id'                => $field_id . '_sale[' . $loop . ']',
+                        'name'              => $field_id . '_sale[' . $loop . ']',
+                        'label'             => sprintf(__('Sale Price (%s)', 'custom-multi-currency'), $currency),
+                        'placeholder'       => wc_format_localized_price(0),
+                        'value'             => $sale_price,
+                        'type'              => 'text',
+                        'data_type'         => 'price',
+                        'wrapper_class'     => 'form-row form-row-last',
+                        'desc_tip'          => true,
+                        'description'       => sprintf(__('Enter the sale price in %s', 'custom-multi-currency'), $currency),
+                        'custom_attributes' => array('data-cmc-field' => 'sale'),
                     ));
                     ?>
+                    <p class="cmc-price-error" style="display:none;">
+                        <?php esc_html_e('Sale price must be lower than the regular price.', 'custom-multi-currency'); ?>
+                    </p>
                 </div>
             </div>
             <?php

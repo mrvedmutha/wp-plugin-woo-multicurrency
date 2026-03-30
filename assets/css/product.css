@@ -132,6 +132,23 @@
   padding: 12px;
 }
 
+/* Price validation error */
+.cmc-price-error {
+  color: #d63638;
+  font-size: 12px;
+  margin: -4px 0 8px;
+  padding: 6px 10px;
+  background: #fcf0f1;
+  border-left: 3px solid #d63638;
+  border-radius: 2px;
+  clear: both;
+}
+
+.cmc-input-error {
+  border-color: #d63638 !important;
+  box-shadow: 0 0 0 1px #d63638 !important;
+}
+
 /* Responsive adjustments */
 @media (max-width: 782px) {
   .cmc-accordion-header h4 {

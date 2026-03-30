@@ -41,6 +41,12 @@ class CMC_Frontend {
             add_filter('woocommerce_product_variation_get_regular_price', array($this, 'get_custom_regular_price'), 10, 2);
             add_filter('woocommerce_product_variation_get_sale_price', array($this, 'get_custom_sale_price'), 10, 2);
 
+            // Fix the variable product price range (e.g. "$35.99 – $39.99").
+            // woocommerce_variation_prices directly overrides the prices array used
+            // for range display, and the hash filter busts the per-currency cache.
+            add_filter('woocommerce_variation_prices', array($this, 'filter_variation_prices'), 10, 3);
+            add_filter('woocommerce_get_variation_prices_hash', array($this, 'variation_prices_hash'), 10, 3);
+
             // Only override currency symbol/code on the frontend
             add_filter('woocommerce_currency_symbol', array($this, 'get_currency_symbol'), 10, 2);
             add_filter('woocommerce_currency', array($this, 'get_currency'));
@@ -98,6 +104,52 @@ class CMC_Frontend {
         return '';
     }
     
+    /**
+     * Replace prices in WooCommerce's variation prices array with CMC custom prices.
+     * This fixes the price range display (e.g. "$35.99 – $39.99") on variable products.
+     * The array is keyed by variation ID for price, regular_price, and sale_price.
+     */
+    public function filter_variation_prices($prices_array, $product, $for_display) {
+        $active_currency = CMC_Currency_Manager::get_active_currency();
+
+        // get_woocommerce_currency() runs through our own woocommerce_currency filter
+        // and returns the active currency — so read the stored option directly.
+        $base_currency = get_option('woocommerce_currency');
+
+        // Base currency already has correct prices — nothing to override
+        if ($active_currency === $base_currency) {
+            return $prices_array;
+        }
+
+        foreach (array_keys($prices_array['price']) as $variation_id) {
+            $regular_price = CMC_Product_Fields::get_product_price($variation_id, $active_currency, 'regular');
+            $sale_price    = CMC_Product_Fields::get_product_price($variation_id, $active_currency, 'sale');
+
+            if ($regular_price !== null && $regular_price !== '') {
+                $prices_array['regular_price'][$variation_id] = $regular_price;
+
+                if ($sale_price !== null && $sale_price !== '') {
+                    $prices_array['sale_price'][$variation_id] = $sale_price;
+                    $prices_array['price'][$variation_id]      = $sale_price;
+                } else {
+                    $prices_array['sale_price'][$variation_id] = '';
+                    $prices_array['price'][$variation_id]      = $regular_price;
+                }
+            }
+        }
+
+        return $prices_array;
+    }
+
+    /**
+     * Include active currency in the variation prices cache hash so each
+     * currency gets its own cached price range.
+     */
+    public function variation_prices_hash($hash, $product, $for_display) {
+        $hash[] = CMC_Currency_Manager::get_active_currency();
+        return $hash;
+    }
+
     /**
      * Get currency symbol based on active currency
      */
